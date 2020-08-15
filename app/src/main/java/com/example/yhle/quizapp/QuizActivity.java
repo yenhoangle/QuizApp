@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class QuizActivity extends AppCompatActivity implements android.view.View.OnClickListener {
     private Button trueBtn;
@@ -47,13 +48,30 @@ public class QuizActivity extends AppCompatActivity implements android.view.View
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.true_button:
+                checkAnswer(true);
                 break;
             case R.id.false_button:
+                checkAnswer(false);
                 break;
             case R.id.next_button:
                 //makes sure questions cycle back to the beginning
                 currentQuestionIndex = (currentQuestionIndex + 1) % questionBank.length;
-                questionTextView.setText(questionBank[currentQuestionIndex].getAnswerResId());
+                updateQuestion();
         }
+    }
+
+    private void updateQuestion() {
+        questionTextView.setText(questionBank[currentQuestionIndex].getAnswerResId());
+    }
+
+    private void checkAnswer(boolean userChooseCorrect) {
+        boolean answerIsTrue = questionBank[currentQuestionIndex].isAnswerTrue();
+        int toastMessageId = 0;
+        if (userChooseCorrect == answerIsTrue) {
+            toastMessageId = R.string.correct_answer;
+        } else {
+            toastMessageId = R.string.wrong_answer;
+        }
+        Toast.makeText(QuizActivity.this, toastMessageId, Toast.LENGTH_SHORT).show();
     }
 }
